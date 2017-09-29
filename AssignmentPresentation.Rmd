@@ -1,0 +1,67 @@
+---
+title: "Shiny Application and Reproducible Pitch"
+author: "Tai Chee Ming"
+date: "30 September 2017"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+##Investment Calculator
+To many new investors, they have no idea how the stock market works. In this Shiny application, I will be using Apple shares as an illustration to show new investors who to calculate the brokerage commission. This Shiny application is easy to understand and easy to use. 
+
+User can go to https://kentaicm.shinyapps.io/Week4Assignment/ to try out this Shiny app.
+
+##Use of Investment Calculator
+This is an investment calculator. For user who likes to buy the shares of Apple (AAPL), they can key in the quantity they like to buy at the left panel. But that is not the end, the user also need to input the share price of Apple (APPL) for the web application to proceed further. After keying in these 2 input, the web application will calculate the cost, commission and the total capital required.
+
+##Code of iu.R
+```{r echo=TRUE}
+library(shiny)
+shinyUI(
+        pageWithSidebar(
+                headerPanel("Investment Calculator"),
+                sidebarPanel(
+                        numericInput('share', 'How many shares you like to buy?', 10, min = 1, max = 100000000, step = 1
+                        ),
+                        numericInput('apple', 'What is Apple share price?', 153, min = 1, max = 12, step = 1
+                        ),
+                        submitButton('Buy')
+                ),
+                mainPanel(
+                        h3('Calculate the capital required to buy Apple shares'),
+                        h4('Cost to buy ($)'),
+                        verbatimTextOutput("Ctb"),
+                        h4('Commission ($) if $1 per share'),
+                        verbatimTextOutput("Com"),
+                        h4('Total capital required ($)'),
+                        verbatimTextOutput("Tcr"),
+                        h5('This is an investment calculator. For user who likes to buy the shares of 
+Apple (AAPL), they can key in the quantity they like to buy at the left panel.
+But that is not the end, the user also need to input the share price of Apple
+(APPL) for the web application to proceed further. After keying in these 2 input, 
+the web application will calculate the cost, commission and the total capital required.')
+                )
+        )
+)
+```
+
+##Code of server.R
+```{r echo=TRUE}
+library(shiny)
+Capital <- function(share) share 
+shinyServer(
+        function(input, output) {
+                output$Ctb <- renderPrint({input$share * input$apple})
+                output$Com <- renderPrint({Capital(input$share)})
+                output$Tcr <- renderPrint({Capital(input$share * input$apple + input$share)})
+                
+        }
+)
+```
+
+
